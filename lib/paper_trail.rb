@@ -40,7 +40,7 @@ module PaperTrail
       
       audit_trail << { 
         :event => previous_version.event,
-        :changed_by => previous_version.whodunnit,
+        :changed_by => transform_whodunnit(previous_version.whodunnit),
         :changed_at => previous_version.created_at,
         :changes => differences(attributes_before, attributes_after)
         }
@@ -48,7 +48,12 @@ module PaperTrail
 
     audit_trail
   end
+
+  protected
   
+  def transform_whodunnit(whodunnit)
+    whodunnit
+  end
 
   private
 
