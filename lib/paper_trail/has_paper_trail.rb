@@ -48,6 +48,17 @@ module PaperTrail
                       :object    => object_to_string(previous_version),
                       :whodunnit => PaperTrail.whodunnit) if self.class.paper_trail_active
     end
+    
+    # Returns the object at the version that was valid at the given timestamp.
+    def version_at timestamp
+      # short-circuit if the current state is valid
+      return self if self.updated_at < timestamp
+      
+      version = versions.first(
+        :conditions => ['created_at < ?', timestamp], 
+        :order => 'created_at DESC')
+      version.reify if version
+    end
 
     # Walk the versions to construct an audit trail of the edits made 
     # over time, and by whom.
