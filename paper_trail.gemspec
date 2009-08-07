@@ -2,12 +2,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{paper_trail}
-  s.version = "1.2.3"
+  s.version = "1.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Stewart", "Jeremy Weiskotten", "Joe Lind"]
   s.date = %q{2009-07-31}
-  s.email = %q{boss@airbladesoftware.com}
+  s.email = %q{jeremy@weiskotten.com}
   s.extra_rdoc_files = [
     "README.md"
   ]
@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
      "uninstall.rb"
   ]
   s.has_rdoc = true
-  s.homepage = %q{http://github.com/airblade/paper_trail}
+  s.homepage = %q{http://github.com/jeremyw/paper_trail}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
