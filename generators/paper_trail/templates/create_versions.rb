@@ -7,8 +7,10 @@ class CreateVersions < ActiveRecord::Migration
       t.string   :whodunnit
       t.text     :object
       t.datetime :created_at
+      t.integer  :user_id,   :null => true
     end
     add_index :versions, [:item_type, :item_id]
+    add_index :versions, :user_id
   end
 
   def self.down
