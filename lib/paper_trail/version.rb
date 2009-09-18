@@ -1,5 +1,7 @@
 class Version < ActiveRecord::Base
   belongs_to :item, :polymorphic => true
+  belongs_to :user
+  before_save :set_user_id
   validates_presence_of :event
 
   def reify
@@ -56,4 +58,10 @@ class Version < ActiveRecord::Base
                 :order => 'id ASC').index(self)
   end
   
+  private
+
+  def set_user_id
+    self.user_id = self.whodunnit.to_i if self.whodunnit.to_s =~ /^\d+$/
+    return true
+  end
 end
