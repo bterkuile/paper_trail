@@ -5,7 +5,7 @@ class Version < ActiveRecord::Base
   validates_presence_of :event
 
   named_scope :for_disease, lambda { |disease|
-    { :joins => :users.
+    { :joins => :users,
       :conditions => {'users.disease_id' => disease}
     }
   }
