@@ -71,7 +71,7 @@ class Version < ActiveRecord::Base
   private
 
   def set_user_id
-    self.user_id = self.whodunnit.to_i if self.whodunnit.to_s =~ /^\d+$/
+    self.user_id = self.whodunnit.id if self.whodunnit.is_a?(ActiveRecord::Base)
     return true
   end
 end
