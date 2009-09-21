@@ -4,21 +4,15 @@ class Version < ActiveRecord::Base
   before_save :set_user_id
   validates_presence_of :event
 
-  named_scope :for_disease, lambda { |disease|
-    { :joins => :users,
-      :conditions => {'users.disease_id' => disease}
-    }
-  }
-
   named_scope :for_item_type, lambda { |item_types|
     { :conditions => { :item_type => item_types } }
   }
 
   named_scope :created_after, lambda { |time|
-    { :conditions => ['created_at > ?', time] }
+    { :conditions => ['versions.created_at > ?', time] }
   }
 
-  named_scope :by_created_at_ascending, :order => 'created_at asc'
+  named_scope :by_created_at_ascending, :order => 'versions.created_at asc'
 
   def reify
     unless object.nil?
