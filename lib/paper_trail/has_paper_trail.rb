@@ -32,11 +32,11 @@ module PaperTrail
   module InstanceMethods
     def record_create
       versions.create(:event     => 'create',
-                      :whodunnit => PaperTrail.whodunnit) if self.class.paper_trail_active
+                      :whodunnit => PaperTrail.whodunnit) if self.class.paper_trail_active && !PaperTrail.disabled
     end
 
     def record_update
-      if changed? and self.class.paper_trail_active
+      if changed? and self.class.paper_trail_active and !PaperTrail.disabled
         versions.build :event     => 'update',
                        :object    => object_to_string(previous_version),
                        :whodunnit => PaperTrail.whodunnit
@@ -46,7 +46,7 @@ module PaperTrail
     def record_destroy
       versions.create(:event     => 'destroy',
                       :object    => object_to_string(previous_version),
-                      :whodunnit => PaperTrail.whodunnit) if self.class.paper_trail_active
+                      :whodunnit => PaperTrail.whodunnit) if self.class.paper_trail_active && !PaperTrail.disabled
     end
     
     # Returns the object at the version that was valid at the given timestamp.

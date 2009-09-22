@@ -1,8 +1,11 @@
 require 'yaml'
 require 'paper_trail/has_paper_trail'
 require 'paper_trail/version'
+mattr_accessor :disabled
+
 
 module PaperTrail
+  mattr_accessor :disabled
   @@whodunnit = nil
 
   def self.included(base)
