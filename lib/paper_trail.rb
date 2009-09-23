@@ -1,17 +1,23 @@
 require 'yaml'
 require 'paper_trail/has_paper_trail'
 require 'paper_trail/version'
-mattr_accessor :disabled
-
 
 module PaperTrail
-  mattr_accessor :disabled
+  @@enabled = true
   @@whodunnit = nil
 
   def self.included(base)
     base.before_filter :set_whodunnit
   end
 
+  def self.enabled=(value)
+    @@enabled = value
+  end
+  
+  def self.enabled?
+    @@enabled
+  end
+  
   def self.whodunnit
     @@whodunnit.respond_to?(:call) ? @@whodunnit.call : @@whodunnit
   end
