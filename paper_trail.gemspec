@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Stewart", "Jeremy Weiskotten", "Joe Lind"]
-  s.date = %q{2009-08-07}
+  s.date = %q{2009-10-02}
   s.email = %q{jeremy@weiskotten.com}
   s.extra_rdoc_files = [
     "README.md"
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "init.rb",
      "install.rb",
      "lib/paper_trail.rb",
+     "lib/paper_trail/config.rb",
      "lib/paper_trail/has_paper_trail.rb",
      "lib/paper_trail/version.rb",
      "paper_trail.gemspec",
