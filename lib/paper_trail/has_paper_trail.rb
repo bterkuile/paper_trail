@@ -8,7 +8,7 @@ module PaperTrail
   module ClassMethods
     def has_paper_trail
       send :include, InstanceMethods
-      
+
       cattr_accessor :paper_trail_active
       self.paper_trail_active = true
 
@@ -48,19 +48,19 @@ module PaperTrail
                       :object    => object_to_string(previous_version),
                       :whodunnit => PaperTrail.whodunnit) if self.class.paper_trail_active && PaperTrail.enabled?
     end
-    
+
     # Returns the object at the version that was valid at the given timestamp.
     def version_at timestamp
       # short-circuit if the current state is valid
       return self if self.updated_at < timestamp
-      
+
       version = versions.first(
-        :conditions => ['created_at < ?', timestamp], 
+        :conditions => ['created_at < ?', timestamp],
         :order => 'created_at DESC')
       version.reify if version
     end
 
-    # Walk the versions to construct an audit trail of the edits made 
+    # Walk the versions to construct an audit trail of the edits made
     # over time, and by whom.
     def audit_trail options={}
       options[:attributes_to_ignore] ||= %w(updated_at)
@@ -77,11 +77,11 @@ module PaperTrail
         attributes_before = yaml_to_hash(previous_version.object)
 
         # remove some attributes that we don't need to report
-        [attributes_before, attributes_after].each do |hash| 
+        [attributes_before, attributes_after].each do |hash|
           hash.reject! { |k,v| k.in? Array(options[:attributes_to_ignore]) }
         end
 
-        audit_trail << { 
+        audit_trail << {
           :event => previous_version.event,
           :changed_by => transform_whodunnit(previous_version.whodunnit),
           :changed_at => previous_version.created_at,
@@ -91,14 +91,14 @@ module PaperTrail
 
       audit_trail
     end
-    
+
     protected
 
     def transform_whodunnit(whodunnit)
       whodunnit
     end
-    
-    
+
+
     private
 
     def previous_version
@@ -113,13 +113,13 @@ module PaperTrail
     def object_to_string(object)
       object.attributes.to_yaml
     end
-    
+
     def yaml_to_hash(yaml)
       return {} if yaml.nil?
       YAML::load(yaml).to_hash
     end
 
-    # Returns an array of hashes, where each hash specifies the +:attribute+, 
+    # Returns an array of hashes, where each hash specifies the +:attribute+,
     # value +:before+ the change, and value +:after+ the change.
     def differences(before, after)
       before.diff(after).keys.sort.inject([]) do |diffs, k|
@@ -130,8 +130,8 @@ module PaperTrail
 
     def versions_including_current_in_descending_order
       v = self.versions.dup
-      v << Version.new(:event => 'update', 
-        :object => object_to_string(self), 
+      v << Version.new(:event => 'update',
+        :object => object_to_string(self),
         :created_at => self.updated_at)
       v.reverse # newest first
     end

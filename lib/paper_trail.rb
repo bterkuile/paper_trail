@@ -3,21 +3,24 @@ require 'paper_trail/has_paper_trail'
 require 'paper_trail/version'
 
 module PaperTrail
-  @@enabled = true
   @@whodunnit = nil
+
+  def self.config
+    @@config ||= PaperTrail::Config.instance
+  end
 
   def self.included(base)
     base.before_filter :set_whodunnit
   end
 
   def self.enabled=(value)
-    @@enabled = value
+    PaperTrail.config.enabled = value
   end
-  
+
   def self.enabled?
-    @@enabled
+    !!PaperTrail.config.enabled
   end
-  
+
   def self.whodunnit
     @@whodunnit.respond_to?(:call) ? @@whodunnit.call : @@whodunnit
   end
@@ -33,7 +36,7 @@ module PaperTrail
       self.send :current_user rescue nil
     }
   end
-  
+
 end
 
 ActionController::Base.send :include, PaperTrail
