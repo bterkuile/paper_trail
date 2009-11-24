@@ -129,7 +129,11 @@ module PaperTrail
     end
 
     def versions_including_current_in_descending_order
-      v = self.versions.dup
+      if self.new_record?
+        v = Version.all(:order => 'created_at desc', :conditions => {:item_id => id, :item_type => self.class.name})
+      else
+        v = self.versions.dup
+      end
       v << Version.new(:event => 'update',
         :object => object_to_string(self),
         :created_at => self.updated_at)
