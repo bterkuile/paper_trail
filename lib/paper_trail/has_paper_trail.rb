@@ -6,8 +6,13 @@ module PaperTrail
 
 
   module ClassMethods
-    def has_paper_trail
+    # Options:
+    # :ignore    an array of attributes for which a new +Version+ will not be created if only they change.
+    def has_paper_trail(options = {})
       send :include, InstanceMethods
+
+      cattr_accessor :ignore
+      self.ignore = (options[:ignore] || []).map &:to_s
 
       cattr_accessor :paper_trail_active
       self.paper_trail_active = true
@@ -36,7 +41,7 @@ module PaperTrail
     end
 
     def record_update
-      if changed? and self.class.paper_trail_active and PaperTrail.enabled?
+      if changed_and_we_care? and self.class.paper_trail_active and PaperTrail.enabled?
         versions.build :event     => 'update',
                        :object    => object_to_string(previous_version),
                        :whodunnit => PaperTrail.whodunnit
@@ -138,6 +143,10 @@ module PaperTrail
         :object => object_to_string(self),
         :created_at => self.updated_at)
       v.reverse # newest first
+    end
+    
+    def changed_and_we_care?
+      changed? and !(changed - self.class.ignore).empty?
     end
   end
 

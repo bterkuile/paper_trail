@@ -17,9 +17,28 @@ class Fluxor < ActiveRecord::Base
   belongs_to :widget
 end
 
+class Article < ActiveRecord::Base
+  has_paper_trail :ignore => [:title]
+end
+
 
 class HasPaperTrailModelTest < Test::Unit::TestCase
   load_schema
+
+  context 'A record' do
+    setup { @article = Article.create }
+    
+    context 'which updates an ignored column' do
+      setup { @article.update_attributes :title => 'My first title' }
+      should_not_change('the number of versions') { Version.count }
+    end
+
+    context 'which updates an ignored column and a non-ignored column' do
+      setup { @article.update_attributes :title => 'My first title', :content => 'Some text here.' }
+      should_change('the number of versions', :by => 1) { Version.count }
+    end
+
+  end
 
   context 'A new record' do
     setup { @widget = Widget.new }
@@ -194,7 +213,7 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
     should 'handle datetimes' do
       # Is there a better way to test equality of two datetimes?
       format = '%a, %d %b %Y %H:%M:%S %z' # :rfc822
-      assert_equal @date_time.strftime(format), @previous.a_datetime.strftime(format)
+      assert_equal @date_time.utc.strftime(format), @previous.a_datetime.utc.strftime(format)
     end
 
     should 'handle times' do
@@ -224,14 +243,14 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
 
       should 'restore all forward-compatible attributes' do
         format = '%a, %d %b %Y %H:%M:%S %z' # :rfc822
-        assert_equal    'Warble',                    @last.reify.name
-        assert_equal    'The quick brown fox',       @last.reify.a_text
-        assert_equal    42,                          @last.reify.an_integer
-        assert_in_delta 153.01,                      @last.reify.a_float,   0.001
-        assert_in_delta 2.71828,                     @last.reify.a_decimal, 0.00001
-        assert_equal    @date_time.strftime(format), @last.reify.a_datetime.strftime(format)
-        assert_equal    @time,                       @last.reify.a_time
-        assert_equal    @date,                       @last.reify.a_date
+        assert_equal    'Warble',                        @last.reify.name
+        assert_equal    'The quick brown fox',           @last.reify.a_text
+        assert_equal    42,                              @last.reify.an_integer
+        assert_in_delta 153.01,                          @last.reify.a_float,   0.001
+        assert_in_delta 2.71828,                         @last.reify.a_decimal, 0.00001
+        assert_equal    @date_time.utc.strftime(format), @last.reify.a_datetime.utc.strftime(format)
+        assert_equal    @time,                           @last.reify.a_time
+        assert_equal    @date,                           @last.reify.a_date
         assert          @last.reify.a_boolean
       end
     end
