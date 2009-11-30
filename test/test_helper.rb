@@ -16,6 +16,7 @@ unless defined?(ActiveRecord)
 
   %w(action_pack action_controller active_record active_support initializer).each {|f| require f}
 end
+require 'ruby-debug'
 require 'shoulda'
 require 'paper_trail'
 

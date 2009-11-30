@@ -57,19 +57,19 @@ module PaperTrail
     # Returns the object at the version that was valid at the given timestamp.
     def version_at timestamp
       # short-circuit if the current state is valid
-      return self if self.updated_at < timestamp
+      return self if self.updated_at <= timestamp
 
       version = versions.first(
-        :conditions => ['created_at < ?', timestamp],
-        :order => 'created_at DESC')
+        :conditions => ['created_at > ?', timestamp],
+        :order => 'created_at ASC')
       version.reify if version
     end
 
     # Walk the versions to construct an audit trail of the edits made
     # over time, and by whom.
     def audit_trail options={}
-      options[:attributes_to_ignore] ||= %w(updated_at)
-
+      # ignore updated_at by default because the version's created_at is good enough
+      options[:attributes_to_ignore] = Array(options[:attributes_to_ignore] || %w(updated_at))
       audit_trail = []
 
       versions_desc = versions_including_current_in_descending_order
@@ -83,7 +83,7 @@ module PaperTrail
 
         # remove some attributes that we don't need to report
         [attributes_before, attributes_after].each do |hash|
-          hash.reject! { |k,v| k.in? Array(options[:attributes_to_ignore]) }
+          hash.reject! { |k,v| k.in? options[:attributes_to_ignore] }
         end
 
         audit_trail << {
@@ -99,6 +99,9 @@ module PaperTrail
 
     protected
 
+    # Override this method in your model to transform the whodunnit string
+    # into something domain-specific. For example, to fetch a User instance by
+    # its id.
     def transform_whodunnit(whodunnit)
       whodunnit
     end
