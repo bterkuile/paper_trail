@@ -240,7 +240,6 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
       end
 
       should 'restore all forward-compatible attributes' do
-        # format = '%a, %d %b %Y %H:%M:%S %z' # :rfc822
         assert_equal    'Warble',                        @last.reify.name
         assert_equal    'The quick brown fox',           @last.reify.a_text
         assert_equal    42,                              @last.reify.an_integer
