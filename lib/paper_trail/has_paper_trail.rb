@@ -95,7 +95,7 @@ module PaperTrail
 
         # remove some attributes that we don't need to report
         [attributes_before, attributes_after].each do |hash|
-          hash.reject! { |k,v| k.in? options[:attributes_to_ignore] }
+          hash.reject! { |k,v| options[:attributes_to_ignore].include?(k) }
         end
 
         audit_trail << {
