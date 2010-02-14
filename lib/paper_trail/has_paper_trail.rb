@@ -155,12 +155,10 @@ module PaperTrail
       end
     end
 
+    # Returns all versions, newest first, including a pseudo-version that
+    # represents the current version of the entity.
     def versions_including_current_in_descending_order
-      if self.new_record?
-        v = Version.all(:order => 'created_at desc', :conditions => {:item_id => id, :item_type => self.class.name})
-      else
-        v = self.versions.dup
-      end
+      v = self.versions.dup
       v << Version.new(:event => 'update',
         :object => object_to_string(self),
         :created_at => self.updated_at)
