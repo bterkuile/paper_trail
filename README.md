@@ -174,6 +174,40 @@ And on again like this:
 
     >> Widget.paper_trail_on
 
+You can also disable PaperTrail for all models:
+
+    >> PapertTrail.enabled = false
+
+For example, you might want to disable PaperTrail in the test environment for your
+Rails application so that your unit tests run faster:
+
+    # in config/environments/test.rb
+    config.after_initialize do 
+      PapertTrail.enabled = false
+    end
+
+If you disable PaperTrail in your test environment but want to enable PaperTrail
+in specific tests, you can add a helper like the following to test_helper.rb:
+
+    # Enable PaperTrail versioning for the duration of the block.
+    def with_versioning
+      was_enabled = PaperTrail.enabled?
+      PaperTrail.enabled = true
+      begin
+        yield
+      ensure
+        PaperTrail.enabled = was_enabled
+      end
+    end
+
+And use it in your tests like this:
+
+    test "something that needs versioning" do
+      with_versioning do
+        # your test
+      end
+    end
+
 
 ## Installation
 
