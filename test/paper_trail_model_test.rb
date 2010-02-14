@@ -50,12 +50,19 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
       assert_equal [], @widget.versions
     end
 
+    should 'not be reified' do
+      assert_equal false, @widget.reified?
+    end
 
     context 'which is then created' do
       setup { @widget.update_attributes :name => 'Henry' }
 
       should 'have one previous version' do
         assert_equal 1, @widget.versions.length
+      end
+
+      should 'not be reified' do
+        assert_equal false, @widget.reified?
       end
 
       should 'be nil in its previous version' do
@@ -74,6 +81,10 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
         should 'not have a new version' do
           assert_equal 1, @widget.versions.length
         end
+
+        should 'not be reified' do
+          assert_equal false, @widget.reified?
+        end
       end
 
 
@@ -82,6 +93,10 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
 
         should 'have two previous versions' do
           assert_equal 2, @widget.versions.length
+        end
+
+        should 'not be reified' do
+          assert_equal false, @widget.reified?
         end
 
         should 'be available in its previous version' do
@@ -239,7 +254,9 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
       end
 
       should 'reify previous version' do
-        assert_kind_of Widget, @last.reify
+        reified_widget = @last.reify
+        assert_kind_of Widget, reified_widget
+        assert reified_widget.reified?
       end
 
       should 'restore all forward-compatible attributes' do
@@ -349,6 +366,7 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
     should 'reify with the correct type' do
       thing = @foo.versions.last.reify
       assert_kind_of FooWidget, thing
+      assert thing.reified?
     end
 
 
@@ -358,6 +376,7 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
       should 'reify with the correct type' do
         thing = @foo.versions.last.reify
         assert_kind_of FooWidget, thing
+        assert thing.reified?
       end
     end
   end

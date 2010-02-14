@@ -49,6 +49,7 @@ class Version < ActiveRecord::Base
         end
       end
 
+      model.reified!
       model
     end
   end

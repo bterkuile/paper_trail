@@ -28,6 +28,9 @@ module PaperTrail
       after_create  :record_create
       before_update :record_update
       after_destroy :record_destroy
+
+      self.send(:define_method, "reified!") { @_reified = true }
+      self.send(:define_method, "reified?") { !!@_reified }
     end
 
     def paper_trail_off
