@@ -173,6 +173,21 @@ class HasPaperTrailModelTest < Test::Unit::TestCase
             @reified_widget.save
             assert_equal 1, @reified_widget.fluxors.length
           end
+
+          should 'build an audit trail' do
+            audit_trail = @widget.audit_trail
+            assert_equal 3, audit_trail.size
+
+            # the audit trails hould list the most recent event first
+            assert_equal 'destroy', audit_trail[0][:event]
+            assert_equal 'update',  audit_trail[1][:event]
+            assert_equal 'create',  audit_trail[2][:event]
+
+            audit_trail.each do |change|
+              assert_kind_of Time, change[:changed_at]
+              assert_kind_of Array, change[:changes]
+            end
+          end
         end
       end
     end
