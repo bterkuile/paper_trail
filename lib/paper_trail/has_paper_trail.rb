@@ -64,7 +64,7 @@ module PaperTrail
     end
 
     # Returns the object at the version that was valid at the given timestamp.
-    def version_at timestamp
+    def version_at(timestamp)
       # short-circuit if the current state is valid
       return self if self.updated_at <= timestamp
 
@@ -76,7 +76,7 @@ module PaperTrail
 
     # Walk the versions to construct an audit trail of the edits made
     # over time, and by whom.
-    def audit_trail options={}
+    def audit_trail(options={})
       # ignore updated_at by default because the version's created_at is good enough
       options[:attributes_to_ignore] = Array(options[:attributes_to_ignore] || %w(updated_at))
       audit_trail = []
